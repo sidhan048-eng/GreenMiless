@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>GreenMiles — Fill the Return. Save the Planet.</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --green:#1D9E75;--green-l:#E1F5EE;--green-d:#0F6E56;--green-m:#9FE1CB;
+  --green2:#639922;--green2-l:#EAF3DE;--green2-d:#27500A;--green2-m:#C0DD97;
+  --blue-l:#E6F1FB;--blue:#185FA5;--blue-d:#0C447C;--blue-m:#B5D4F4;
+  --amber-l:#FAEEDA;--amber:#854F0B;--amber-d:#633806;
+  --red:#E24B4A;--red-l:#FCEBEB;--red-d:#791F1F;
+  --bg:#F2F5F2;--surface:#FFFFFF;--surface2:#F0F3F0;
+  --border:rgba(0,0,0,0.09);--border-s:rgba(0,0,0,0.16);
+  --text:#1A1A18;--text2:#5A5E5A;--text3:#96A096;
+  --r:14px;--rs:8px;
+  --shadow:0 2px 10px rgba(0,0,0,0.06);--shadow-lg:0 8px 32px rgba(0,0,0,0.10);
+}
+html,body{background:var(--bg);font-family:'DM Sans',sans-serif;font-size:16px;color:var(--text);min-height:100vh;display:flex;justify-content:center;align-items:flex-start;padding:24px 12px}
+
+.phone{width:100%;max-width:390px;min-height:800px;background:var(--surface);border-radius:36px;border:1px solid var(--border);box-shadow:var(--shadow-lg);overflow:hidden;display:flex;flex-direction:column}
+
+.sb{background:var(--surface);padding:12px 22px 8px;display:flex;justify-content:space-between;font-size:11px;font-weight:500;color:var(--text2);border-bottom:1px solid var(--border);flex-shrink:0}
+
+.screen{display:none;flex-direction:column;flex:1;overflow-y:auto}
+.screen.active{display:flex}
+
+.topbar{background:var(--surface);padding:16px 20px 13px;border-bottom:1px solid var(--border);flex-shrink:0}
+.topbar h2{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--text)}
+.topbar p{font-size:12px;color:var(--text2);margin-top:3px}
+
+.content{padding:16px;flex:1;display:flex;flex-direction:column;gap:12px}
+
+.card{background:var(--surface);border-radius:var(--r);border:1px solid var(--border);padding:15px;display:flex;flex-direction:column;gap:10px;box-shadow:var(--shadow)}
+
+.row{display:flex;justify-content:space-between;align-items:center}
+.lbl{font-size:12px;color:var(--text2)}
+.val{font-size:13px;font-weight:500;color:var(--text)}
+
+.badge{display:inline-block;font-size:11px;font-weight:500;padding:3px 10px;border-radius:100px}
+.bg{background:var(--green2-l);color:var(--green2-d)}
+.ba{background:var(--amber-l);color:var(--amber-d)}
+.bb{background:var(--blue-l);color:var(--blue-d)}
+
+.divider{height:1px;background:var(--border)}
+
+/* Value hero — green savings block */
+.v-hero{background:var(--green2-l);border-radius:var(--rs);border:1px solid var(--green2-m);padding:14px;display:flex;flex-direction:column;gap:8px}
+.v-hero .vh-tag{font-size:10px;font-weight:500;color:var(--green2);text-transform:uppercase;letter-spacing:0.07em}
+.v-hero .vh-big{font-family:'Syne',sans-serif;font-size:30px;font-weight:700;color:var(--green2-d);line-height:1}
+.v-hero .vh-sub{font-size:11px;color:var(--green2);margin-top:1px}
+.v-hero .vh-note{font-size:12px;color:var(--green2-d);line-height:1.5}
+
+/* Before/after price compare */
+.vs-row{display:flex;gap:8px;align-items:center}
+.vs-box{flex:1;border-radius:var(--rs);padding:10px 11px;display:flex;flex-direction:column;gap:2px}
+.vs-old{background:var(--red-l);border:1px solid #F7C1C1}
+.vs-new{background:var(--green2-l);border:1px solid var(--green2-m)}
+.vs-tag{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.05em}
+.vs-old .vs-tag{color:var(--red-d)}
+.vs-new .vs-tag{color:var(--green2)}
+.vs-price{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;line-height:1.1}
+.vs-old .vs-price{color:var(--red-d);text-decoration:line-through;opacity:0.65}
+.vs-new .vs-price{color:var(--green2-d)}
+.vs-note{font-size:11px;margin-top:1px}
+.vs-old .vs-note{color:var(--red-d);opacity:0.7}
+.vs-new .vs-note{color:var(--green2)}
+.vs-arr{font-size:16px;color:var(--text3);flex-shrink:0}
+
+/* Eco strip */
+.eco{background:var(--green2-l);border-radius:var(--rs);border:1px solid var(--green2-m);padding:11px 13px;display:flex;gap:9px;align-items:flex-start}
+.eco-ico{font-size:14px;flex-shrink:0;margin-top:1px}
+.eco-txt{font-size:12px;color:var(--green2-d);line-height:1.5}
+
+/* Why boxes */
+.why-row{display:flex;gap:8px}
+.why-box{flex:1;background:var(--surface2);border-radius:var(--rs);padding:11px;display:flex;flex-direction:column;gap:5px;border:1px solid var(--border)}
+.why-ico{font-size:18px}
+.why-title{font-size:12px;font-weight:500;color:var(--text)}
+.why-desc{font-size:11px;color:var(--text2);line-height:1.45}
+
+/* Buttons */
+.btn{width:100%;padding:13px;border-radius:var(--rs);border:1px solid var(--border-s);background:var(--surface);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;color:var(--text);cursor:pointer;transition:background 0.13s,transform 0.1s}
+.btn:hover{background:var(--surface2)}
+.btn:active{transform:scale(0.98)}
+.btn-p{background:var(--green2);border-color:var(--green2);color:#fff}
+.btn-p:hover{background:var(--green2-d)}
+.btn-g{background:var(--surface2)}
+.btn-sm{padding:9px 12px;font-size:13px;width:auto;flex:1}
+.btn-row{display:flex;gap:8px}
+
+/* Inputs */
+.ig{display:flex;flex-direction:column;gap:5px}
+.ig label{font-size:12px;color:var(--text2);font-weight:500}
+.ig input,.ig select{width:100%;padding:11px 13px;border-radius:var(--rs);border:1px solid var(--border-s);background:var(--surface2);font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);outline:none;transition:border-color 0.15s}
+.ig input:focus,.ig select:focus{border-color:var(--green2);background:var(--surface)}
+
+.slbl{font-size:10px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em}
+
+/* Avatar */
+.av{width:40px;height:40px;border-radius:50%;background:var(--green2-l);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--green2-d);flex-shrink:0}
+.av-b{background:var(--blue-l);color:var(--blue-d)}
+.prow{display:flex;align-items:center;gap:10px}
+.pname{font-size:14px;font-weight:500;color:var(--text)}
+.psub{font-size:11px;color:var(--text2);margin-top:2px}
+
+/* Route */
+.route{display:flex;flex-direction:column;gap:0;margin:4px 0}
+.rstop{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--text)}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dg{background:var(--green2)}
+.dr{background:var(--red)}
+.rvline{width:1px;height:13px;background:var(--border-s);margin-left:3.5px}
+
+/* Tabs */
+.tab-bar{display:flex;background:var(--surface);border-top:1px solid var(--border);flex-shrink:0}
+.tab{flex:1;padding:10px 0 13px;text-align:center;cursor:pointer;border:none;background:transparent}
+.tab:hover{background:var(--surface2)}
+.tico{font-size:17px;display:block}
+.tlbl{font-size:10px;color:var(--text3);margin-top:2px;display:block;font-weight:500}
+.tab.on .tlbl{color:var(--green2)}
+
+/* Stats */
+.stat-row{display:flex;gap:8px;width:100%}
+.stat{flex:1;background:var(--surface2);border-radius:var(--rs);padding:12px;text-align:center;border:1px solid var(--border)}
+.stat .snum{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:var(--text)}
+.stat .slb{font-size:11px;color:var(--text2);margin-top:3px}
+
+/* Confirm */
+.confirm-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 22px;gap:16px;text-align:center}
+.check-c{width:70px;height:70px;background:var(--green2-l);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;border:1px solid var(--green2-m);animation:pop 0.35s ease}
+@keyframes pop{0%{transform:scale(0.5);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+.confirm-wrap h2{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:var(--text)}
+.confirm-wrap p{font-size:13px;color:var(--text2);line-height:1.65;max-width:275px}
+
+.sc-box{background:var(--green2-l);border:1px solid var(--green2-m);border-radius:var(--r);padding:15px 16px;width:100%;display:flex;flex-direction:column;gap:8px}
+.sc-row{display:flex;justify-content:space-between;align-items:center}
+.sc-lbl{font-size:12px;color:var(--green2)}
+.sc-val{font-size:13px;font-weight:500;color:var(--green2-d)}
+.sc-big{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--green2-d)}
+.sc-div{height:1px;background:var(--green2-m)}
+
+/* Welcome hero */
+.logo-mark{width:50px;height:50px;background:var(--green2);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px}
+.tagline{font-family:'Syne',sans-serif;font-size:23px;font-weight:700;color:var(--text);line-height:1.28}
+.role-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;cursor:pointer;display:flex;align-items:center;gap:13px;box-shadow:var(--shadow);transition:border-color 0.15s,transform 0.1s}
+.role-card:hover{border-color:var(--green2)}
+.role-card:active{transform:scale(0.98)}
+.rico{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0}
+.rico-g{background:var(--green2-l);border:1px solid var(--green2-m)}
+.rico-b{background:var(--blue-l);border:1px solid var(--blue-m)}
+.role-card h3{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--text)}
+.role-card p{font-size:12px;color:var(--text2);margin-top:3px;line-height:1.4}
+.chev{margin-left:auto;font-size:20px;color:var(--text3);flex-shrink:0}
+
+/* Driver earnings highlight */
+.earn-box{background:var(--green2-l);border:1px solid var(--green2-m);border-radius:var(--rs);padding:13px}
+.earn-tag{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.07em;color:var(--green2);margin-bottom:4px}
+.earn-big{font-family:'Syne',sans-serif;font-size:30px;font-weight:700;color:var(--green2-d);line-height:1}
+.earn-note{font-size:11px;color:var(--green2);margin-top:4px}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>GreenMiles · Kerala</span><span>▲▲▲ 100%</span></div>
+
+  <!-- ═══════════════ WELCOME ═══════════════ -->
+  <div class="screen active" id="s-home">
+    <div class="content" style="padding-top:22px">
+      <div style="display:flex;align-items:center;gap:11px;margin-bottom:2px">
+        <div class="logo-mark">🌿</div>
+        <div>
+          <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--text)">GreenMiles</div>
+          <div style="font-size:11px;color:var(--green2);font-weight:500">Fill the return. Save the planet.</div>
+        </div>
+      </div>
+
+      <div class="tagline">The truck is going anyway.<br>Why not fill it?</div>
+
+      <div class="why-row">
+        <div class="why-box">
+          <div class="why-ico">💸</div>
+          <div class="why-title">Up to 60% cheaper</div>
+          <div class="why-desc">Return trips cost drivers nothing extra — savings pass to you</div>
+        </div>
+        <div class="why-box">
+          <div class="why-ico">🌱</div>
+          <div class="why-title">Zero extra emissions</div>
+          <div class="why-desc">The truck runs regardless. Filling it eliminates a wasted trip</div>
+        </div>
+      </div>
+
+      <div class="why-box" style="flex-direction:row;align-items:center;gap:12px">
+        <div class="why-ico" style="font-size:22px">🤝</div>
+        <div>
+          <div class="why-title">Fair for drivers too</div>
+          <div class="why-desc">Drivers earn on trips they'd make anyway. No empty run, no wasted fuel.</div>
+        </div>
+      </div>
+
+      <p class="slbl" style="margin-bottom:-4px">I am a...</p>
+
+      <div class="role-card" onclick="goTo('s-driver')">
+        <div class="rico rico-g">🚛</div>
+        <div><h3>Truck driver</h3><p>Post my return trip, find loads, earn extra</p></div>
+        <div class="chev">›</div>
+      </div>
+
+      <div class="role-card" onclick="goTo('s-biz')">
+        <div class="rico rico-b">🏪</div>
+        <div><h3>Business owner</h3><p>Find cheap return-trip trucks on my route</p></div>
+        <div class="chev">›</div>
+      </div>
+
+      <div class="eco">
+        <span class="eco-ico">🌿</span>
+        <span class="eco-txt">Every GreenMiles trip fills an empty truck that was already on the road. Zero extra fuel. Zero extra emissions.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ DRIVER — POST ROUTE ═══════════════ -->
+  <div class="screen" id="s-driver">
+    <div class="topbar"><h2>Post your return route</h2><p>Let businesses see your truck is available</p></div>
+    <div class="content">
+      <div class="eco">
+        <span class="eco-ico">💡</span>
+        <span class="eco-txt">You're driving back anyway — posting takes 30 seconds and could earn you ₹3,000–₹8,000 extra per trip on GreenMiles.</span>
+      </div>
+      <div class="card">
+        <div class="ig"><label>Departing from</label><input type="text" value="Kochi"/></div>
+        <div class="ig"><label>Returning to</label><input type="text" value="Thrissur"/></div>
+        <div class="ig"><label>Departure time</label><input type="text" value="Today, 3:00 PM"/></div>
+        <div class="ig"><label>Available capacity</label>
+          <select><option>5 tons</option><option selected>10 tons</option><option>15 tons</option><option>20 tons</option></select>
+        </div>
+        <div class="ig"><label>Cargo types accepted</label>
+          <select><option selected>Any cargo</option><option>Dry goods only</option><option>Refrigerated</option><option>Construction</option></select>
+        </div>
+      </div>
+      <button class="btn btn-p" onclick="goTo('s-driver-req')">Post my route →</button>
+      <button class="btn btn-g" onclick="goTo('s-home')">← Back</button>
+    </div>
+    <div class="tab-bar">
+      <button class="tab on"><span class="tico">📋</span><span class="tlbl">Post route</span></button>
+      <button class="tab" onclick="goTo('s-driver-req')"><span class="tico">💬</span><span class="tlbl">Requests</span></button>
+      <button class="tab"><span class="tico">👤</span><span class="tlbl">Profile</span></button>
+    </div>
+  </div>
+
+  <!-- ═══════════════ DRIVER — REQUESTS ═══════════════ -->
+  <div class="screen" id="s-driver-req">
+    <div class="topbar"><h2>Load requests</h2><p>Kochi → Thrissur · Today 3:00 PM</p></div>
+    <div class="content">
+      <div class="eco">
+        <span class="eco-ico">🌿</span>
+        <span class="eco-txt">2 businesses matched your GreenMiles route. Accepting a load means one less empty truck on Kerala's roads.</span>
+      </div>
+      <p class="slbl">Incoming requests</p>
+
+      <div class="card">
+        <div class="row">
+          <div class="prow"><div class="av">RJ</div><div><div class="pname">Rajan Textiles</div><div class="psub">⭐ 4.7 · 23 shipments</div></div></div>
+          <span class="badge bg">New</span>
+        </div>
+        <div class="divider"></div>
+        <div class="route">
+          <div class="rstop"><div class="dot dg"></div>Kochi</div>
+          <div class="rvline"></div>
+          <div class="rstop"><div class="dot dr"></div>Thrissur</div>
+        </div>
+        <div class="row"><span class="lbl">Cargo</span><span class="val">Fabric rolls — 3 tons</span></div>
+        <div class="divider"></div>
+        <div class="earn-box">
+          <div class="earn-tag">Your GreenMiles earnings — this return trip</div>
+          <div class="earn-big">₹4,500</div>
+          <div class="earn-note">You're going back anyway — this is pure extra income</div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-p btn-sm" onclick="goTo('s-confirm')">Accept</button>
+          <button class="btn btn-g btn-sm">Decline</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="row">
+          <div class="prow"><div class="av">SH</div><div><div class="pname">Suresh Hardware</div><div class="psub">⭐ 4.5 · 11 shipments</div></div></div>
+          <span class="badge ba">Alt route</span>
+        </div>
+        <div class="divider"></div>
+        <div class="route">
+          <div class="rstop"><div class="dot dg"></div>Kochi</div>
+          <div class="rvline"></div>
+          <div class="rstop"><div class="dot dr"></div>Palakkad</div>
+        </div>
+        <div class="row"><span class="lbl">Cargo</span><span class="val">Cement bags — 5 tons</span></div>
+        <div class="divider"></div>
+        <div class="earn-box">
+          <div class="earn-tag">Your GreenMiles earnings — this return trip</div>
+          <div class="earn-big">₹6,000</div>
+          <div class="earn-note">Slight detour, higher pay — worth considering</div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-p btn-sm" onclick="goTo('s-confirm')">Accept</button>
+          <button class="btn btn-g btn-sm">Decline</button>
+        </div>
+      </div>
+    </div>
+    <div class="tab-bar">
+      <button class="tab" onclick="goTo('s-driver')"><span class="tico">📋</span><span class="tlbl">Post route</span></button>
+      <button class="tab on"><span class="tico">💬</span><span class="tlbl">Requests</span></button>
+      <button class="tab"><span class="tico">👤</span><span class="tlbl">Profile</span></button>
+    </div>
+  </div>
+
+  <!-- ═══════════════ BUSINESS — SEARCH ═══════════════ -->
+  <div class="screen" id="s-biz">
+    <div class="topbar"><h2>Find a return-trip truck</h2><p>Pay only for the ride back — not a full trip</p></div>
+    <div class="content">
+      <div class="v-hero">
+        <div class="vh-tag">💸 Why GreenMiles is cheaper</div>
+        <div class="vh-big">Up to 60% off</div>
+        <div class="vh-sub">vs. booking a dedicated truck</div>
+        <div class="vh-note">These trucks are already returning empty. Filling them costs the driver nothing extra — and those savings come straight to you.</div>
+      </div>
+      <div class="card">
+        <div class="ig"><label>Pickup location</label><input type="text" value="Kochi"/></div>
+        <div class="ig"><label>Delivery destination</label><input type="text" value="Thrissur"/></div>
+        <div class="ig"><label>Date needed</label><input type="text" value="Today"/></div>
+        <div class="ig"><label>Cargo weight</label>
+          <select><option>Under 2 tons</option><option selected>2–5 tons</option><option>5–10 tons</option><option>10+ tons</option></select>
+        </div>
+      </div>
+      <button class="btn btn-p" onclick="goTo('s-results')">Find trucks on GreenMiles →</button>
+      <button class="btn btn-g" onclick="goTo('s-home')">← Back</button>
+    </div>
+    <div class="tab-bar">
+      <button class="tab on"><span class="tico">🔍</span><span class="tlbl">Search</span></button>
+      <button class="tab"><span class="tico">📦</span><span class="tlbl">Bookings</span></button>
+      <button class="tab"><span class="tico">👤</span><span class="tlbl">Profile</span></button>
+    </div>
+  </div>
+
+  <!-- ═══════════════ RESULTS ═══════════════ -->
+  <div class="screen" id="s-results">
+    <div class="topbar"><h2>Trucks available</h2><p>Kochi → Thrissur · Today</p></div>
+    <div class="content">
+      <p class="slbl">2 GreenMiles return trips found</p>
+
+      <div class="card">
+        <div class="row">
+          <div class="prow"><div class="av">MK</div><div><div class="pname">Manoj Kumar</div><div class="psub">⭐ 4.8 · 142 trips</div></div></div>
+          <span class="badge bg">Available now</span>
+        </div>
+        <div class="row"><span class="lbl">Capacity</span><span class="val">10 tons · Any cargo</span></div>
+        <div class="row"><span class="lbl">Departing</span><span class="val">Today 3:00 PM</span></div>
+        <div class="divider"></div>
+        <div class="vs-row">
+          <div class="vs-box vs-old">
+            <div class="vs-tag">Dedicated truck</div>
+            <div class="vs-price">₹9,000</div>
+            <div class="vs-note">Full trip cost</div>
+          </div>
+          <div class="vs-arr">→</div>
+          <div class="vs-box vs-new">
+            <div class="vs-tag">GreenMiles rate</div>
+            <div class="vs-price">₹4,500</div>
+            <div class="vs-note">You save ₹4,500</div>
+          </div>
+        </div>
+        <div class="eco" style="padding:9px 12px">
+          <span class="eco-ico" style="font-size:13px">🌿</span>
+          <span class="eco-txt" style="font-size:11px">Filling this return trip prevents ~18 kg of CO₂ from an empty run</span>
+        </div>
+        <button class="btn btn-p" onclick="goTo('s-confirm')">Book on GreenMiles — ₹4,500</button>
+      </div>
+
+      <div class="card">
+        <div class="row">
+          <div class="prow"><div class="av av-b">RS</div><div><div class="pname">Rajesh Subramaniam</div><div class="psub">⭐ 4.6 · 88 trips</div></div></div>
+          <span class="badge ba">Leaves 5:30 PM</span>
+        </div>
+        <div class="row"><span class="lbl">Capacity</span><span class="val">15 tons · Dry goods</span></div>
+        <div class="divider"></div>
+        <div class="vs-row">
+          <div class="vs-box vs-old">
+            <div class="vs-tag">Dedicated truck</div>
+            <div class="vs-price">₹14,000</div>
+            <div class="vs-note">Full trip cost</div>
+          </div>
+          <div class="vs-arr">→</div>
+          <div class="vs-box vs-new">
+            <div class="vs-tag">GreenMiles rate</div>
+            <div class="vs-price">₹6,000</div>
+            <div class="vs-note">You save ₹8,000</div>
+          </div>
+        </div>
+        <div class="eco" style="padding:9px 12px">
+          <span class="eco-ico" style="font-size:13px">🌿</span>
+          <span class="eco-txt" style="font-size:11px">Filling this return trip prevents ~24 kg of CO₂ compared to an empty run</span>
+        </div>
+        <button class="btn" onclick="goTo('s-confirm')">Book on GreenMiles — ₹6,000</button>
+      </div>
+
+      <button class="btn btn-g" onclick="goTo('s-biz')">← Change search</button>
+    </div>
+    <div class="tab-bar">
+      <button class="tab on"><span class="tico">🔍</span><span class="tlbl">Search</span></button>
+      <button class="tab"><span class="tico">📦</span><span class="tlbl">Bookings</span></button>
+      <button class="tab"><span class="tico">👤</span><span class="tlbl">Profile</span></button>
+    </div>
+  </div>
+
+  <!-- ═══════════════ CONFIRMED ═══════════════ -->
+  <div class="screen" id="s-confirm">
+    <div class="confirm-wrap">
+      <div class="check-c">✓</div>
+      <div>
+        <h2>Trip confirmed!</h2>
+        <p style="margin-top:7px">Manoj Kumar picks up your cargo from Kochi at 3:00 PM and delivers to Thrissur today.</p>
+      </div>
+
+      <div class="sc-box">
+        <div class="sc-row"><span class="sc-lbl">GreenMiles return-trip rate</span><span class="sc-val">₹4,500</span></div>
+        <div class="sc-row"><span class="sc-lbl">Dedicated truck would cost</span><span class="sc-val" style="text-decoration:line-through;opacity:0.6">₹9,000</span></div>
+        <div class="sc-div"></div>
+        <div class="sc-row"><span class="sc-lbl" style="font-weight:500">💸 You saved</span><span class="sc-big">₹4,500</span></div>
+      </div>
+
+      <div class="sc-box">
+        <div class="sc-row"><span class="sc-lbl">Empty truck emissions avoided</span><span class="sc-val">~18 kg CO₂</span></div>
+        <div class="sc-row"><span class="sc-lbl">Driver's extra income earned</span><span class="sc-val">₹4,500</span></div>
+        <div class="sc-div"></div>
+        <div style="font-size:12px;color:var(--green2-d);line-height:1.55;margin-top:2px">🌿 The truck was going anyway. By filling it on GreenMiles, everyone wins — you, the driver, and the planet.</div>
+      </div>
+
+      <button class="btn btn-p" style="width:100%" onclick="goTo('s-home')">Back to GreenMiles home</button>
+    </div>
+  </div>
+
+</div>
+<script>
+function goTo(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelector('.phone').scrollTop=0;
+}
+</script>
+</body>
+</html>
